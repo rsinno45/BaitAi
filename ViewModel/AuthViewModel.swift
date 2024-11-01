@@ -10,13 +10,13 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 
-public class AuthViewModel: ObservableObject {
-    @Published public var isAuthenticated = false
-    @Published public var isAdmin = false
-    @Published public var errorMessage: String?
-    @Published public var isLoading = false
+ class AuthViewModel: ObservableObject {
+    @Published  var isAuthenticated = false
+    @Published  var isAdmin = false
+    @Published  var errorMessage: String?
+    @Published  var isLoading = false
     
-    public init() {} 
+
 
     // MARK: - Sign In
     func signIn(email: String, password: String) {
