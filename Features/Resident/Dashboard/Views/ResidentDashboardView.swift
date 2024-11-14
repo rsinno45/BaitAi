@@ -1,6 +1,46 @@
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
 
+class ResidentViewModel: ObservableObject {
+    @Published var firstName = ""
+    @Published var lastName = ""
+    @Published var email = ""
+    @Published var unitNumber = ""
+    @Published var phoneNumber = ""
+    @Published var moveInDate = ""
+    @Published var leaseEndDate = ""
+    @Published var rentStatus = ""
+    
+    var initials: String {
+        let firstInitial = firstName.prefix(1)
+        let lastInitial = lastName.prefix(1)
+        return "\(firstInitial)\(lastInitial)"
+    }
+    
+    func fetchUserData() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        
+        let db = Firestore.firestore()
+        db.collection("users").document(userId).getDocument { [weak self] snapshot, error in
+            guard let self = self,
+                  let data = snapshot?.data() else { return }
+            
+            DispatchQueue.main.async {
+                self.firstName = data["firstName"] as? String ?? ""
+                self.lastName = data["lastName"] as? String ?? ""
+                self.email = data["email"] as? String ?? ""
+                self.unitNumber = data["unitNumber"] as? String ?? ""
+                self.phoneNumber = data["phoneNumber"] as? String ?? ""
+                self.moveInDate = data["moveInDate"] as? String ?? ""
+                self.leaseEndDate = data["leaseEndDate"] as? String ?? ""
+                self.rentStatus = data["rentStatus"] as? String ?? ""
+            }
+        }
+    }
+}
 struct ResidentDashboardView: View {
+    @StateObject private var viewModel = ResidentViewModel()
     // Define colors
     let goldColor = Color(red: 212/255, green: 175/255, blue: 55/255)
     let lightGoldColor = Color(red: 232/255, green: 205/255, blue: 85/255)
@@ -19,7 +59,7 @@ struct ResidentDashboardView: View {
                     VStack(alignment: .leading) {
                         Text("Welcome Back,")
                             .font(.title2)
-                        Text("John Doe")
+                        Text("\(viewModel.firstName) \(viewModel.lastName)")
                             .font(.title)
                             .fontWeight(.bold)
                     }
@@ -32,13 +72,15 @@ struct ResidentDashboardView: View {
                         .fill(goldColor)
                         .frame(width: 50, height: 50)
                         .overlay(
-                            Text("JD")
+                            Text(viewModel.initials)
                                 .foregroundColor(.white)
                                 .font(.system(size: 20, weight: .medium))
                         )
                 }
                 .padding()
-                
+                .onAppear {
+                    viewModel.fetchUserData()
+                }
                 ScrollView {
                     VStack(spacing: 20) {
                         // Quick Actions Grid
@@ -161,33 +203,32 @@ struct QuickActionButton: View {
     let icon: String
     let title: String
     let subtitle: String
-    let action: () -> Void  // Add this
+    let action: () -> Void
+    let goldColor = Color(red: 212/255, green: 175/255, blue: 55/255)
     
     var body: some View {
-        Button(action: action) {  // Use the action
+        Button(action: action) {
             VStack(alignment: .leading, spacing: 8) {
                 Image(systemName: icon)
                     .font(.title2)
-                    .foregroundColor(.white)
-                    .frame(width: 40, height: 40)
-                    .background(Color(red: 212/255, green: 175/255, blue: 55/255))
-                    .cornerRadius(10)
+                    .foregroundColor(goldColor)
                 
                 Text(title)
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.white)
                 
                 Text(subtitle)
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundColor(.gray)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(15)
+            .background(Color.white.opacity(0.1))
+            .cornerRadius(10)
         }
     }
 }
+
 struct ActivityCard: View {
     let title: String
     let time: String

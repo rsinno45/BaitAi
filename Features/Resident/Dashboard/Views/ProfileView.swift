@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @StateObject private var viewModel = ResidentViewModel()
     @Binding var isAuthenticated: Bool
     let goldColor = Color(red: 212/255, green: 175/255, blue: 55/255)
     let lightGoldColor = Color(red: 232/255, green: 205/255, blue: 85/255)
@@ -17,16 +18,16 @@ struct ProfileView: View {
                             .fill(goldColor)
                             .frame(width: 100, height: 100)
                             .overlay(
-                                Text("JD")
+                                Text(viewModel.initials)
                                     .foregroundColor(.white)
                                     .font(.system(size: 40, weight: .medium))
                             )
                         
-                        Text("John Doe")
+                        Text("\(viewModel.firstName) \(viewModel.lastName)")
                             .font(.title)
                             .fontWeight(.bold)
                         
-                        Text("Unit 301")
+                        Text("Unit Number: \(viewModel.unitNumber)")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
@@ -34,19 +35,19 @@ struct ProfileView: View {
                     
                     // Quick Info Cards
                     HStack(spacing: 15) {
-                        InfoCard(title: "Lease Ends", value: "Aug 2025")
-                        InfoCard(title: "Rent Status", value: "Paid")
-                    }
+                                            InfoCard(title: "Lease Ends", value: viewModel.leaseEndDate)
+                                            InfoCard(title: "Rent Status", value: viewModel.rentStatus)
+                                        }
                     .padding(.horizontal)
                     
                     // Profile Sections
                     VStack(spacing: 5) {
                         ProfileSection(title: "Personal Information", icon: "person.fill") {
-                            ProfileRow(title: "Email", value: "john.doe@email.com")
-                            ProfileRow(title: "Phone", value: "(555) 123-4567")
-                            ProfileRow(title: "Move-in Date", value: "Sept 1, 2023")
-                        }
-                        
+                        ProfileRow(title: "Email", value: viewModel.email)
+                        ProfileRow(title: "Phone", value: viewModel.phoneNumber)
+                        ProfileRow(title: "Move-in Date", value: viewModel.moveInDate)
+                                                }
+
                         ProfileSection(title: "Documents", icon: "doc.fill") {
                             ProfileRow(title: "Lease Agreement", value: "View →")
                             ProfileRow(title: "Renter's Insurance", value: "View →")
@@ -69,7 +70,7 @@ struct ProfileView: View {
                     
                     // Sign Out Button
                     Button(action: {
-                        isAuthenticated = false  // Just this one line, like in TestView
+                        isAuthenticated = false
                     }) {
                         Text("Sign Out")
                             .font(.headline)
@@ -80,6 +81,9 @@ struct ProfileView: View {
                             .cornerRadius(10)
                     }
                     .padding()
+                    .onAppear {
+                                viewModel.fetchUserData()  // Fetch user data when view appears
+                            }
 
                 }
             }

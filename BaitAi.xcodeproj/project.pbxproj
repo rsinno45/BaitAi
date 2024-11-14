@@ -9,11 +9,9 @@
 /* Begin PBXBuildFile section */
 		6B1559EB2CCDC7420093D0AB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1559EA2CCDC7420093D0AB /* User.swift */; };
 		6B1559ED2CCDC74B0093D0AB /* UserRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1559EC2CCDC7460093D0AB /* UserRole.swift */; };
-		6B1559F12CCDC7750093D0AB /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1559F02CCDC76F0093D0AB /* AuthViewModel.swift */; };
 		6B1559F32CCDC79B0093D0AB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1559F22CCDC7970093D0AB /* LoginView.swift */; };
 		6B1559F52CCDC7A30093D0AB /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1559F42CCDC79F0093D0AB /* SignUpView.swift */; };
 		6B1559FC2CCDC83B0093D0AB /* ResidentDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1559FB2CCDC8350093D0AB /* ResidentDashboardView.swift */; };
-		6B1559FF2CCDC87B0093D0AB /* ResidentDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1559FE2CCDC8710093D0AB /* ResidentDashboardViewModel.swift */; };
 		6B155A012CCDFF130093D0AB /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A002CCDFF100093D0AB /* AuthView.swift */; };
 		6B155A032CCEBD3C0093D0AB /* AdminDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A022CCEBD330093D0AB /* AdminDashboardView.swift */; };
 		6B155A052CCEBD4C0093D0AB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A042CCEBD480093D0AB /* MessageView.swift */; };
@@ -23,6 +21,39 @@
 		6B155A2D2CCF54070093D0AB /* AmenitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A2C2CCF54060093D0AB /* AmenitiesView.swift */; };
 		6B155A2F2CCF547A0093D0AB /* PackagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A2E2CCF54790093D0AB /* PackagesView.swift */; };
 		6B155A312CCF5C310093D0AB /* PropertiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A302CCF5C2F0093D0AB /* PropertiesView.swift */; };
+		6B155A372CCFFDE40093D0AB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6B155A362CCFFDE40093D0AB /* FirebaseAnalytics */; };
+		6B155A392CCFFDE40093D0AB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6B155A382CCFFDE40093D0AB /* FirebaseAuth */; };
+		6B155A3B2CCFFDE40093D0AB /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6B155A3A2CCFFDE40093D0AB /* FirebaseCore */; };
+		6B155A3D2CCFFDE40093D0AB /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 6B155A3C2CCFFDE40093D0AB /* FirebaseDatabase */; };
+		6B155A3F2CCFFDE40093D0AB /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6B155A3E2CCFFDE40093D0AB /* FirebaseFirestore */; };
+		6B155A4F2CD104FD0093D0AB /* ResidentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A4E2CD104F90093D0AB /* ResidentListView.swift */; };
+		6B155A512CD1050F0093D0AB /* ResidentSearchBar.swift .swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A502CD1050D0093D0AB /* ResidentSearchBar.swift .swift */; };
+		6B155A532CD105160093D0AB /* ResidentFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A522CD105150093D0AB /* ResidentFilterView.swift */; };
+		6B155A552CD1051D0093D0AB /* ResidentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A542CD1051C0093D0AB /* ResidentRowView.swift */; };
+		6B155A572CD1053D0093D0AB /* ResidentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A562CD1053C0093D0AB /* ResidentDetailView.swift */; };
+		6B155A592CD105430093D0AB /* ResidentInfoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A582CD105420093D0AB /* ResidentInfoSection.swift */; };
+		6B155A5D2CD105510093D0AB /* LeaseDetailsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A5C2CD105500093D0AB /* LeaseDetailsSection.swift */; };
+		6B155A5F2CD105570093D0AB /* PaymentHistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A5E2CD105560093D0AB /* PaymentHistorySection.swift */; };
+		6B155A612CD1055D0093D0AB /* MaintenanceHistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A602CD1055C0093D0AB /* MaintenanceHistorySection.swift */; };
+		6B155A632CD105620093D0AB /* DocumentsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A622CD105620093D0AB /* DocumentsSection.swift */; };
+		6B155A672CD105840093D0AB /* AddResidentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A662CD105820093D0AB /* AddResidentView.swift */; };
+		6B155A692CD1058E0093D0AB /* EditResidentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A682CD1058D0093D0AB /* EditResidentView.swift */; };
+		6B155A6B2CD105950093D0AB /* ResidentDocumentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A6A2CD105930093D0AB /* ResidentDocumentsView.swift */; };
+		6B155A6E2CD105D30093D0AB /* Resident.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A6D2CD105D10093D0AB /* Resident.swift */; };
+		6B155A702CD105DA0093D0AB /* LeaseDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A6F2CD105D60093D0AB /* LeaseDetails.swift */; };
+		6B155A722CD105E40093D0AB /* PaymentHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A712CD105DD0093D0AB /* PaymentHistory.swift */; };
+		6B155A742CD105ED0093D0AB /* ResidentDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A732CD105E70093D0AB /* ResidentDocument.swift */; };
+		6B155A792CD1061F0093D0AB /* PropertySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A782CD1061E0093D0AB /* PropertySelector.swift */; };
+		6B155A7B2CD106250093D0AB /* DocumentUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A7A2CD106240093D0AB /* DocumentUploader.swift */; };
+		6B155A7F2CD119210093D0AB /* StatusBadgeComp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B155A7E2CD119170093D0AB /* StatusBadgeComp.swift */; };
+		6B22F09E2CD5517A0093DF86 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B22F09D2CD551740093DF86 /* AnalyticsView.swift */; };
+		6B3C3DFF2CDD00B400318BE3 /* DotLottie in Frameworks */ = {isa = PBXBuildFile; productRef = 6B3C3DFE2CDD00B400318BE3 /* DotLottie */; };
+		6B3C3E022CDD046700318BE3 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 6B3C3E012CDD046700318BE3 /* Lottie */; };
+		6B3C3E042CDD052600318BE3 /* GetStartedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3C3E032CDD052100318BE3 /* GetStartedView.swift */; };
+		6B3C3E312CE400D300318BE3 /* MaintenanceRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3C3E302CE400D000318BE3 /* MaintenanceRequest.swift */; };
+		6B3C3E352CE4014600318BE3 /* MaintenanceRequestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3C3E342CE4014000318BE3 /* MaintenanceRequestViewModel.swift */; };
+		6B3C3E372CE4029100318BE3 /* MaintenanceChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3C3E362CE4028300318BE3 /* MaintenanceChatView.swift */; };
+		6B3C3E392CE403E700318BE3 /* AdminMaintenanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3C3E382CE403E600318BE3 /* AdminMaintenanceView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,11 +79,9 @@
 		6B1559D22CCDC6510093D0AB /* BaitAiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BaitAiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B1559EA2CCDC7420093D0AB /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		6B1559EC2CCDC7460093D0AB /* UserRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRole.swift; sourceTree = "<group>"; };
-		6B1559F02CCDC76F0093D0AB /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		6B1559F22CCDC7970093D0AB /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		6B1559F42CCDC79F0093D0AB /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		6B1559FB2CCDC8350093D0AB /* ResidentDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentDashboardView.swift; sourceTree = "<group>"; };
-		6B1559FE2CCDC8710093D0AB /* ResidentDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentDashboardViewModel.swift; sourceTree = "<group>"; };
 		6B155A002CCDFF100093D0AB /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		6B155A022CCEBD330093D0AB /* AdminDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminDashboardView.swift; sourceTree = "<group>"; };
 		6B155A042CCEBD480093D0AB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
@@ -62,6 +91,38 @@
 		6B155A2C2CCF54060093D0AB /* AmenitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmenitiesView.swift; sourceTree = "<group>"; };
 		6B155A2E2CCF54790093D0AB /* PackagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackagesView.swift; sourceTree = "<group>"; };
 		6B155A302CCF5C2F0093D0AB /* PropertiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertiesView.swift; sourceTree = "<group>"; };
+		6B155A422CCFFE6B0093D0AB /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		6B155A432CCFFE750093D0AB /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		6B155A442CCFFE7B0093D0AB /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		6B155A462CCFFEB70093D0AB /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		6B155A472CCFFEBF0093D0AB /* ResidentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentViewModel.swift; sourceTree = "<group>"; };
+		6B155A482CCFFEC80093D0AB /* AdminViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewModel.swift; sourceTree = "<group>"; };
+		6B155A4E2CD104F90093D0AB /* ResidentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentListView.swift; sourceTree = "<group>"; };
+		6B155A502CD1050D0093D0AB /* ResidentSearchBar.swift .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResidentSearchBar.swift .swift"; sourceTree = "<group>"; };
+		6B155A522CD105150093D0AB /* ResidentFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentFilterView.swift; sourceTree = "<group>"; };
+		6B155A542CD1051C0093D0AB /* ResidentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentRowView.swift; sourceTree = "<group>"; };
+		6B155A562CD1053C0093D0AB /* ResidentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentDetailView.swift; sourceTree = "<group>"; };
+		6B155A582CD105420093D0AB /* ResidentInfoSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentInfoSection.swift; sourceTree = "<group>"; };
+		6B155A5C2CD105500093D0AB /* LeaseDetailsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaseDetailsSection.swift; sourceTree = "<group>"; };
+		6B155A5E2CD105560093D0AB /* PaymentHistorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentHistorySection.swift; sourceTree = "<group>"; };
+		6B155A602CD1055C0093D0AB /* MaintenanceHistorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceHistorySection.swift; sourceTree = "<group>"; };
+		6B155A622CD105620093D0AB /* DocumentsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsSection.swift; sourceTree = "<group>"; };
+		6B155A662CD105820093D0AB /* AddResidentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddResidentView.swift; sourceTree = "<group>"; };
+		6B155A682CD1058D0093D0AB /* EditResidentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditResidentView.swift; sourceTree = "<group>"; };
+		6B155A6A2CD105930093D0AB /* ResidentDocumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentDocumentsView.swift; sourceTree = "<group>"; };
+		6B155A6D2CD105D10093D0AB /* Resident.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resident.swift; sourceTree = "<group>"; };
+		6B155A6F2CD105D60093D0AB /* LeaseDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaseDetails.swift; sourceTree = "<group>"; };
+		6B155A712CD105DD0093D0AB /* PaymentHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentHistory.swift; sourceTree = "<group>"; };
+		6B155A732CD105E70093D0AB /* ResidentDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidentDocument.swift; sourceTree = "<group>"; };
+		6B155A782CD1061E0093D0AB /* PropertySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertySelector.swift; sourceTree = "<group>"; };
+		6B155A7A2CD106240093D0AB /* DocumentUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentUploader.swift; sourceTree = "<group>"; };
+		6B155A7E2CD119170093D0AB /* StatusBadgeComp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadgeComp.swift; sourceTree = "<group>"; };
+		6B22F09D2CD551740093DF86 /* AnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsView.swift; sourceTree = "<group>"; };
+		6B3C3E032CDD052100318BE3 /* GetStartedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetStartedView.swift; sourceTree = "<group>"; };
+		6B3C3E302CE400D000318BE3 /* MaintenanceRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceRequest.swift; sourceTree = "<group>"; };
+		6B3C3E342CE4014000318BE3 /* MaintenanceRequestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceRequestViewModel.swift; sourceTree = "<group>"; };
+		6B3C3E362CE4028300318BE3 /* MaintenanceChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaintenanceChatView.swift; sourceTree = "<group>"; };
+		6B3C3E382CE403E600318BE3 /* AdminMaintenanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminMaintenanceView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -87,6 +148,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B155A372CCFFDE40093D0AB /* FirebaseAnalytics in Frameworks */,
+				6B3C3E022CDD046700318BE3 /* Lottie in Frameworks */,
+				6B155A3B2CCFFDE40093D0AB /* FirebaseCore in Frameworks */,
+				6B155A3D2CCFFDE40093D0AB /* FirebaseDatabase in Frameworks */,
+				6B155A3F2CCFFDE40093D0AB /* FirebaseFirestore in Frameworks */,
+				6B155A392CCFFDE40093D0AB /* FirebaseAuth in Frameworks */,
+				6B3C3DFF2CDD00B400318BE3 /* DotLottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,6 +178,8 @@
 		6B1559AE2CCDC6510093D0AB = {
 			isa = PBXGroup;
 			children = (
+				6B155A452CCFFEAF0093D0AB /* ViewModel */,
+				6B155A402CCFFE530093D0AB /* Firebase */,
 				6B1559B92CCDC6510093D0AB /* BaitAi */,
 				6B1559E52CCDC6E60093D0AB /* Features */,
 				6B1559CB2CCDC6510093D0AB /* BaitAiTests */,
@@ -151,6 +221,7 @@
 		6B1559E72CCDC7100093D0AB /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6B3C3E032CDD052100318BE3 /* GetStartedView.swift */,
 				6B1559F22CCDC7970093D0AB /* LoginView.swift */,
 				6B1559F42CCDC79F0093D0AB /* SignUpView.swift */,
 			);
@@ -160,7 +231,6 @@
 		6B1559E82CCDC71B0093D0AB /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				6B1559F02CCDC76F0093D0AB /* AuthViewModel.swift */,
 				6B155A002CCDFF100093D0AB /* AuthView.swift */,
 			);
 			path = ViewModels;
@@ -186,7 +256,6 @@
 		6B1559F92CCDC8120093D0AB /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
-				6B1559FD2CCDC8530093D0AB /* ViewModels */,
 				6B1559FA2CCDC8220093D0AB /* Views */,
 			);
 			path = Dashboard;
@@ -195,6 +264,7 @@
 		6B1559FA2CCDC8220093D0AB /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6B22F09D2CD551740093DF86 /* AnalyticsView.swift */,
 				6B155A2E2CCF54790093D0AB /* PackagesView.swift */,
 				6B155A2C2CCF54060093D0AB /* AmenitiesView.swift */,
 				6B155A2A2CCF53770093D0AB /* MaintenanceView.swift */,
@@ -204,14 +274,6 @@
 				6B1559FB2CCDC8350093D0AB /* ResidentDashboardView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		6B1559FD2CCDC8530093D0AB /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				6B1559FE2CCDC8710093D0AB /* ResidentDashboardViewModel.swift */,
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		6B155A1C2CCECE5E0093D0AB /* Admin */ = {
@@ -226,25 +288,101 @@
 			isa = PBXGroup;
 			children = (
 				6B155A1F2CCECE720093D0AB /* Views */,
-				6B155A1E2CCECE6C0093D0AB /* ViewModels */,
 			);
 			path = Dashboard;
-			sourceTree = "<group>";
-		};
-		6B155A1E2CCECE6C0093D0AB /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		6B155A1F2CCECE720093D0AB /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6B155A4C2CD104D30093D0AB /* ResidentManagment */,
 				6B155A302CCF5C2F0093D0AB /* PropertiesView.swift */,
 				6B155A022CCEBD330093D0AB /* AdminDashboardView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		6B155A402CCFFE530093D0AB /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				6B155A432CCFFE750093D0AB /* AuthManager.swift */,
+				6B155A442CCFFE7B0093D0AB /* DatabaseManager.swift */,
+				6B155A422CCFFE6B0093D0AB /* FirebaseManager.swift */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		6B155A452CCFFEAF0093D0AB /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				6B155A462CCFFEB70093D0AB /* AuthViewModel.swift */,
+				6B155A472CCFFEBF0093D0AB /* ResidentViewModel.swift */,
+				6B155A482CCFFEC80093D0AB /* AdminViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		6B155A4C2CD104D30093D0AB /* ResidentManagment */ = {
+			isa = PBXGroup;
+			children = (
+				6B155A752CD1060F0093D0AB /* Components */,
+				6B155A6C2CD105B40093D0AB /* Models */,
+				6B155A4D2CD104EF0093D0AB /* Views */,
+			);
+			path = ResidentManagment;
+			sourceTree = "<group>";
+		};
+		6B155A4D2CD104EF0093D0AB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6B3C3E382CE403E600318BE3 /* AdminMaintenanceView.swift */,
+				6B3C3E362CE4028300318BE3 /* MaintenanceChatView.swift */,
+				6B155A652CD1057A0093D0AB /* ResidentActionViews */,
+				6B155A4E2CD104F90093D0AB /* ResidentListView.swift */,
+				6B155A502CD1050D0093D0AB /* ResidentSearchBar.swift .swift */,
+				6B155A522CD105150093D0AB /* ResidentFilterView.swift */,
+				6B155A542CD1051C0093D0AB /* ResidentRowView.swift */,
+				6B155A562CD1053C0093D0AB /* ResidentDetailView.swift */,
+				6B155A582CD105420093D0AB /* ResidentInfoSection.swift */,
+				6B155A5C2CD105500093D0AB /* LeaseDetailsSection.swift */,
+				6B155A5E2CD105560093D0AB /* PaymentHistorySection.swift */,
+				6B155A602CD1055C0093D0AB /* MaintenanceHistorySection.swift */,
+				6B155A622CD105620093D0AB /* DocumentsSection.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6B155A652CD1057A0093D0AB /* ResidentActionViews */ = {
+			isa = PBXGroup;
+			children = (
+				6B155A662CD105820093D0AB /* AddResidentView.swift */,
+				6B155A682CD1058D0093D0AB /* EditResidentView.swift */,
+				6B155A6A2CD105930093D0AB /* ResidentDocumentsView.swift */,
+			);
+			path = ResidentActionViews;
+			sourceTree = "<group>";
+		};
+		6B155A6C2CD105B40093D0AB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6B3C3E342CE4014000318BE3 /* MaintenanceRequestViewModel.swift */,
+				6B3C3E302CE400D000318BE3 /* MaintenanceRequest.swift */,
+				6B155A6D2CD105D10093D0AB /* Resident.swift */,
+				6B155A6F2CD105D60093D0AB /* LeaseDetails.swift */,
+				6B155A712CD105DD0093D0AB /* PaymentHistory.swift */,
+				6B155A732CD105E70093D0AB /* ResidentDocument.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6B155A752CD1060F0093D0AB /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				6B155A7E2CD119170093D0AB /* StatusBadgeComp.swift */,
+				6B155A782CD1061E0093D0AB /* PropertySelector.swift */,
+				6B155A7A2CD106240093D0AB /* DocumentUploader.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,6 +405,13 @@
 			);
 			name = BaitAi;
 			packageProductDependencies = (
+				6B155A362CCFFDE40093D0AB /* FirebaseAnalytics */,
+				6B155A382CCFFDE40093D0AB /* FirebaseAuth */,
+				6B155A3A2CCFFDE40093D0AB /* FirebaseCore */,
+				6B155A3C2CCFFDE40093D0AB /* FirebaseDatabase */,
+				6B155A3E2CCFFDE40093D0AB /* FirebaseFirestore */,
+				6B3C3DFE2CDD00B400318BE3 /* DotLottie */,
+				6B3C3E012CDD046700318BE3 /* Lottie */,
 			);
 			productName = BaitAi;
 			productReference = 6B1559B72CCDC6510093D0AB /* BaitAi.app */;
@@ -350,6 +495,11 @@
 			);
 			mainGroup = 6B1559AE2CCDC6510093D0AB;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6B155A352CCFFDE40093D0AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				6B3C3DFD2CDD00B400318BE3 /* XCRemoteSwiftPackageReference "dotlottie-ios" */,
+				6B3C3E002CDD046700318BE3 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6B1559B82CCDC6510093D0AB /* Products */;
 			projectDirPath = "";
@@ -393,19 +543,43 @@
 			files = (
 				6B1559F32CCDC79B0093D0AB /* LoginView.swift in Sources */,
 				6B1559F52CCDC7A30093D0AB /* SignUpView.swift in Sources */,
+				6B155A4F2CD104FD0093D0AB /* ResidentListView.swift in Sources */,
 				6B155A052CCEBD4C0093D0AB /* MessageView.swift in Sources */,
-				6B1559F12CCDC7750093D0AB /* AuthViewModel.swift in Sources */,
-				6B1559FF2CCDC87B0093D0AB /* ResidentDashboardViewModel.swift in Sources */,
+				6B155A7F2CD119210093D0AB /* StatusBadgeComp.swift in Sources */,
 				6B1559ED2CCDC74B0093D0AB /* UserRole.swift in Sources */,
 				6B1559EB2CCDC7420093D0AB /* User.swift in Sources */,
+				6B155A6E2CD105D30093D0AB /* Resident.swift in Sources */,
+				6B155A792CD1061F0093D0AB /* PropertySelector.swift in Sources */,
+				6B155A632CD105620093D0AB /* DocumentsSection.swift in Sources */,
+				6B3C3E042CDD052600318BE3 /* GetStartedView.swift in Sources */,
+				6B155A532CD105160093D0AB /* ResidentFilterView.swift in Sources */,
+				6B155A7B2CD106250093D0AB /* DocumentUploader.swift in Sources */,
+				6B3C3E352CE4014600318BE3 /* MaintenanceRequestViewModel.swift in Sources */,
 				6B155A012CCDFF130093D0AB /* AuthView.swift in Sources */,
+				6B155A5F2CD105570093D0AB /* PaymentHistorySection.swift in Sources */,
 				6B155A312CCF5C310093D0AB /* PropertiesView.swift in Sources */,
+				6B155A5D2CD105510093D0AB /* LeaseDetailsSection.swift in Sources */,
+				6B155A692CD1058E0093D0AB /* EditResidentView.swift in Sources */,
+				6B155A6B2CD105950093D0AB /* ResidentDocumentsView.swift in Sources */,
+				6B155A552CD1051D0093D0AB /* ResidentRowView.swift in Sources */,
 				6B155A232CCECF490093D0AB /* PayRentView.swift in Sources */,
+				6B155A512CD1050F0093D0AB /* ResidentSearchBar.swift .swift in Sources */,
+				6B155A742CD105ED0093D0AB /* ResidentDocument.swift in Sources */,
+				6B3C3E312CE400D300318BE3 /* MaintenanceRequest.swift in Sources */,
+				6B3C3E392CE403E700318BE3 /* AdminMaintenanceView.swift in Sources */,
 				6B1559FC2CCDC83B0093D0AB /* ResidentDashboardView.swift in Sources */,
 				6B155A072CCEBD5A0093D0AB /* ProfileView.swift in Sources */,
+				6B155A672CD105840093D0AB /* AddResidentView.swift in Sources */,
+				6B155A572CD1053D0093D0AB /* ResidentDetailView.swift in Sources */,
 				6B155A2F2CCF547A0093D0AB /* PackagesView.swift in Sources */,
+				6B155A722CD105E40093D0AB /* PaymentHistory.swift in Sources */,
+				6B155A612CD1055D0093D0AB /* MaintenanceHistorySection.swift in Sources */,
 				6B155A2D2CCF54070093D0AB /* AmenitiesView.swift in Sources */,
 				6B155A2B2CCF53780093D0AB /* MaintenanceView.swift in Sources */,
+				6B155A702CD105DA0093D0AB /* LeaseDetails.swift in Sources */,
+				6B3C3E372CE4029100318BE3 /* MaintenanceChatView.swift in Sources */,
+				6B22F09E2CD5517A0093DF86 /* AnalyticsView.swift in Sources */,
+				6B155A592CD105430093D0AB /* ResidentInfoSection.swift in Sources */,
 				6B155A032CCEBD3C0093D0AB /* AdminDashboardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -764,6 +938,71 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6B155A352CCFFDE40093D0AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.4.0;
+			};
+		};
+		6B3C3DFD2CDD00B400318BE3 /* XCRemoteSwiftPackageReference "dotlottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/LottieFiles/dotlottie-ios";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		6B3C3E002CDD046700318BE3 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6B155A362CCFFDE40093D0AB /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B155A352CCFFDE40093D0AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		6B155A382CCFFDE40093D0AB /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B155A352CCFFDE40093D0AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		6B155A3A2CCFFDE40093D0AB /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B155A352CCFFDE40093D0AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		6B155A3C2CCFFDE40093D0AB /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B155A352CCFFDE40093D0AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		6B155A3E2CCFFDE40093D0AB /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B155A352CCFFDE40093D0AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		6B3C3DFE2CDD00B400318BE3 /* DotLottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B3C3DFD2CDD00B400318BE3 /* XCRemoteSwiftPackageReference "dotlottie-ios" */;
+			productName = DotLottie;
+		};
+		6B3C3E012CDD046700318BE3 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B3C3E002CDD046700318BE3 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6B1559AF2CCDC6510093D0AB /* Project object */;
 }

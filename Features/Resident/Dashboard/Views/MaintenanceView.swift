@@ -4,7 +4,6 @@
 //
 //  Created by Rakan Sinno on 10/28/24.
 //
-
 import SwiftUI
 
 struct MaintenanceView: View {
@@ -13,7 +12,16 @@ struct MaintenanceView: View {
     @Binding var isShowingMaintenanceView: Bool
     @State private var selectedCategory = 0
     @State private var showingNewRequestSheet = false
+    @StateObject private var viewModel = MaintenanceRequestViewModel()
     
+    var filteredRequests: [MaintenanceRequestAdmin] {
+            switch selectedCategory {
+            case 0: return viewModel.requests.filter { $0.status.lowercased() == "active" }
+            case 1: return viewModel.requests.filter { $0.status.lowercased() == "completed" }
+            default: return []
+            }
+        }
+
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
@@ -44,8 +52,16 @@ struct MaintenanceView: View {
                     
                     // Status Overview
                     HStack(spacing: 15) {
-                        StatusCard(title: "Active", count: "2", icon: "wrench.fill")
-                        StatusCard(title: "Completed", count: "8", icon: "checkmark.circle.fill")
+                        StatusCard(
+                            title: "Active",
+                            count: "\(viewModel.requests.filter { $0.status == "active" }.count)",
+                            icon: "wrench.fill"
+                        )
+                        StatusCard(
+                            title: "Completed",
+                            count: "\(viewModel.requests.filter { $0.status == "completed" }.count)",
+                            icon: "checkmark.circle.fill"
+                        )
                     }
                     .padding(.horizontal)
                     
@@ -69,16 +85,15 @@ struct MaintenanceView: View {
                     
                     // Category Picker
                     Picker("Category", selection: $selectedCategory) {
-                        Text("Active").tag(0)
-                        Text("In Progress").tag(1)
-                        Text("Completed").tag(2)
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
-                    
+                                Text("Active").tag(0)
+                                Text("Completed").tag(1)
+                            }
+                            .pickerStyle(.segmented)
+                            .padding(.horizontal)
+
                     // Request List
                     VStack(spacing: 15) {
-                        ForEach(maintenanceRequests) { request in
+                        ForEach(filteredRequests) { request in
                             MaintenanceRequestCard(request: request)
                         }
                     }
@@ -86,20 +101,18 @@ struct MaintenanceView: View {
                 }
                 .padding(.vertical)
             }
+            
+            if viewModel.isLoading {
+                ProgressView()
+            }
         }
         .sheet(isPresented: $showingNewRequestSheet) {
-            NewMaintenanceRequestView(isPresented: $showingNewRequestSheet)
+            NewMaintenanceRequestView(
+                isPresented: $showingNewRequestSheet,
+                viewModel: viewModel
+            )
         }
     }
-}
-
-struct MaintenanceRequest: Identifiable {
-    let id: Int
-    let title: String
-    let description: String
-    let status: String
-    let date: String
-    let urgency: String
 }
 
 struct StatusCard: View {
@@ -128,7 +141,7 @@ struct StatusCard: View {
 }
 
 struct MaintenanceRequestCard: View {
-    let request: MaintenanceRequest
+    let request: MaintenanceRequestAdmin
     let goldColor = Color(red: 212/255, green: 175/255, blue: 55/255)
     
     var body: some View {
@@ -145,7 +158,7 @@ struct MaintenanceRequestCard: View {
                 .foregroundColor(.gray)
             
             HStack {
-                Label(request.date, systemImage: "calendar")
+               // Label(request.date, systemImage: "calendar")
                 Spacer()
                 Label(request.urgency, systemImage: "exclamationmark.circle")
             }
@@ -180,9 +193,9 @@ struct StatusBadge: View {
             .cornerRadius(8)
     }
 }
-
 struct NewMaintenanceRequestView: View {
     @Binding var isPresented: Bool
+    let viewModel: MaintenanceRequestViewModel  // Remove @ObservedObject
     @State private var title = ""
     @State private var description = ""
     @State private var urgency = 0
@@ -204,24 +217,26 @@ struct NewMaintenanceRequestView: View {
                 }
             }
             .navigationTitle("New Request")
-            .navigationBarItems(
-                leading: Button("Cancel") {
-                    isPresented = false
-                },
-                trailing: Button("Submit") {
-                    // Handle submission
-                    isPresented = false
+                        .navigationBarItems(
+                            leading: Button("Cancel") {
+                                isPresented = false
+                            },
+                            trailing: Button("Submit") {
+                                viewModel.submitRequest(  // Updated function name
+                                    title: title,
+                                    description: description,
+                                    urgency: urgency
+                                )
+                                isPresented = false
+                            }
+                            .disabled(title.isEmpty || description.isEmpty)
+                        )
+                    }
                 }
-                .foregroundColor(goldColor)
-            )
-        }
-    }
-}
+            }
+    
+    
 
-// Sample data
-let maintenanceRequests = [
-    MaintenanceRequest(id: 1, title: "Leaking Faucet", description: "Kitchen sink faucet is dripping continuously", status: "Active", date: "Today", urgency: "Medium"),
-    MaintenanceRequest(id: 2, title: "AC Not Cooling", description: "Air conditioning unit isn't cooling properly", status: "In Progress", date: "Yesterday", urgency: "High"),
-    MaintenanceRequest(id: 3, title: "Light Fixture", description: "Bathroom light fixture needs replacement", status: "Completed", date: "Oct 25", urgency: "Low")
-]
+    
+    // Sample data
 

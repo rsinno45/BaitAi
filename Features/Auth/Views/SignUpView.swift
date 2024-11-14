@@ -1,20 +1,31 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @ObservedObject var viewModel: AuthViewModel
     @Binding var isShowingLogin: Bool
     @Binding var isAuthenticated: Bool
+    @Binding var isAdmin: Bool
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
     @State private var firstName = ""
     @State private var lastName = ""
     @State private var unitNumber = ""
-    @State private var showingAlert = false
-    @State private var isAdmin = false
     
     // Define colors
     let goldColor = Color(red: 212/255, green: 175/255, blue: 55/255)
     let lightGoldColor = Color(red: 232/255, green: 205/255, blue: 85/255)
+    
+    // Validation
+    private var isFormValid: Bool {
+        !email.isEmpty &&
+        !password.isEmpty &&
+        !confirmPassword.isEmpty &&
+        !firstName.isEmpty &&
+        !lastName.isEmpty &&
+        (!unitNumber.isEmpty || isAdmin) && // Unit number only required for residents
+        password == confirmPassword
+    }
     
     var body: some View {
         ZStack {
@@ -24,21 +35,7 @@ struct SignUpView: View {
             
             ScrollView {
                 VStack(spacing: 25) {
-                    // Logo/Title Area
-                    Text("Join Bait.ai")
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(isAdmin ? .white : .black)
-                    
-                    // User Type Toggle
-                    HStack {
-                        Toggle("", isOn: $isAdmin)
-                            .tint(goldColor)
-                        Text("Admin")
-                            .foregroundColor(isAdmin ? .white : .gray)
-                    }
-                    .padding(.horizontal, 32)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 32)
+                    // Your existing UI code until the input fields...
                     
                     // Input Fields
                     VStack(spacing: 20) {
@@ -53,10 +50,13 @@ struct SignUpView: View {
                         TextField("Email", text: $email)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .autocorrectionDisabled()
-                         
+                            .keyboardType(.emailAddress)
+                            .autocapitalization(.none)
                         
-                        TextField("Unit Number", text: $unitNumber)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        if !isAdmin {  // Only show unit number for residents
+                            TextField("Unit Number", text: $unitNumber)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                        }
                         
                         SecureField("Password", text: $password)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -67,10 +67,24 @@ struct SignUpView: View {
                     .foregroundColor(.black)
                     .padding(.horizontal, 32)
                     
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .progressViewStyle(CircularProgressViewStyle(tint: goldColor))
+                    }
+                    
                     // Sign Up Button
                     Button(action: {
-                        showingAlert = true
-                        isAuthenticated = true
+                        if isFormValid {
+                            viewModel.signUp(
+                                email: email,
+                                password: password,
+                                firstName: firstName,
+                                lastName: lastName,
+                                unitNumber: unitNumber,
+                                isAdmin: isAdmin
+                            )
+                        }
                     }) {
                         HStack {
                             Text("Create Account")
@@ -82,41 +96,24 @@ struct SignUpView: View {
                         .frame(height: 55)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(goldColor)
+                                .fill(isFormValid ? goldColor : goldColor.opacity(0.5))
                                 .shadow(color: goldColor.opacity(0.5), radius: 5, x: 0, y: 3)
                         )
                     }
+                    .disabled(!isFormValid)
                     .padding(.horizontal, 32)
-                    .alert(isPresented: $showingAlert) {
-                        Alert(
-                            title: Text(isAdmin ? "Admin Sign Up" : "Tenant Sign Up"),
-                            message: Text("Add your registration logic here"),
-                            dismissButton: .default(Text("OK"))
-                        )
+                    
+                    if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                            .padding()
                     }
                     
-                    Spacer()
-                    
-                    // Login Link
-                    HStack {
-                                Text("Already have an account?")
-                                    .foregroundColor(isAdmin ? .gray : .gray)
-                        Button(action: {
-                                    withAnimation {
-                                        isShowingLogin = true
-                                    }
-                                }) {
-                                    Text("Log In")
-                                        .foregroundColor(goldColor)
-                                        .fontWeight(.semibold)
-                                }
-                            }
-                    .font(.footnote)
-                    .padding(.bottom, 20)
+                    // Your existing login link code...
                 }
                 .padding(.top, 60)
             }
         }
     }
 }
-
