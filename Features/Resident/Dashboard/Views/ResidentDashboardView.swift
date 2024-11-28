@@ -11,6 +11,9 @@ class ResidentViewModel: ObservableObject {
     @Published var moveInDate = ""
     @Published var leaseEndDate = ""
     @Published var rentStatus = ""
+    @Published var organizationId: String?
+    
+    private let db = Firestore.firestore()
     
     var initials: String {
         let firstInitial = firstName.prefix(1)
@@ -21,20 +24,56 @@ class ResidentViewModel: ObservableObject {
     func fetchUserData() {
         guard let userId = Auth.auth().currentUser?.uid else { return }
         
-        let db = Firestore.firestore()
-        db.collection("users").document(userId).getDocument { [weak self] snapshot, error in
+        // First find which organization this user belongs to
+        findUserOrganization(userId) { [weak self] organizationId in
             guard let self = self,
-                  let data = snapshot?.data() else { return }
+                  let orgId = organizationId else { return }
             
-            DispatchQueue.main.async {
-                self.firstName = data["firstName"] as? String ?? ""
-                self.lastName = data["lastName"] as? String ?? ""
-                self.email = data["email"] as? String ?? ""
-                self.unitNumber = data["unitNumber"] as? String ?? ""
-                self.phoneNumber = data["phoneNumber"] as? String ?? ""
-                self.moveInDate = data["moveInDate"] as? String ?? ""
-                self.leaseEndDate = data["leaseEndDate"] as? String ?? ""
-                self.rentStatus = data["rentStatus"] as? String ?? ""
+            self.organizationId = orgId
+            
+            // Then get the user data from the correct path
+            let residentRef = self.db.collection("organization")
+                .document(orgId)
+                .collection("residents")
+                .document(userId)
+            
+            residentRef.getDocument { [weak self] snapshot, error in
+                guard let self = self,
+                      let data = snapshot?.data() else { return }
+                
+                DispatchQueue.main.async {
+                    self.firstName = data["firstName"] as? String ?? ""
+                    self.lastName = data["lastName"] as? String ?? ""
+                    self.email = data["email"] as? String ?? ""
+                    self.unitNumber = data["unitNumber"] as? String ?? ""
+                    self.phoneNumber = data["phoneNumber"] as? String ?? ""
+                    self.moveInDate = data["moveInDate"] as? String ?? ""
+                    self.leaseEndDate = data["leaseEndDate"] as? String ?? ""
+                    self.rentStatus = data["rentStatus"] as? String ?? ""
+                }
+            }
+        }
+    }
+    
+    private func findUserOrganization(_ userId: String, completion: @escaping (String?) -> Void) {
+        db.collection("organization").getDocuments { [weak self] snapshot, error in
+            guard let documents = snapshot?.documents else {
+                completion(nil)
+                return
+            }
+            
+            // Check each organization for this resident
+            for doc in documents {
+                self?.db.collection("organization")
+                    .document(doc.documentID)
+                    .collection("residents")
+                    .document(userId)
+                    .getDocument { snapshot, error in
+                        if snapshot?.exists == true {
+                            completion(doc.documentID)
+                            return
+                        }
+                    }
             }
         }
     }
