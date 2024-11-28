@@ -6,16 +6,23 @@ import DotLottie
 import UIKit
 import Lottie
 
+// Add this struct to store credentials
+struct UserCredentials {
+    static var shared = UserCredentials()
+    var email: String?
+    var password: String?
+}
 
 class AuthViewModel: ObservableObject {
-   @Published  var isAuthenticated = false
-   @Published  var isAdmin = false
-   @Published  var errorMessage: String?
-   @Published  var isLoading = false
-
-   // MARK: - Sign In
+    @Published var isAuthenticated = false
+    @Published var isAdmin = false
+    @Published var errorMessage: String?
+    @Published var isLoading = false
+    @Published var organizationId: String?
+    
+    // MARK: - Sign In
     func signIn(email: String, password: String) {
-        print("Attempting to sign in with email: \(email)")  // Add this
+        print("Attempting to sign in with email: \(email)")
         isLoading = true
         errorMessage = nil
         
@@ -26,38 +33,70 @@ class AuthViewModel: ObservableObject {
                 self.isLoading = false
                 
                 if let error = error {
-                    print("Sign in error: \(error.localizedDescription)")  // Add this
+                    print("Sign in error: \(error.localizedDescription)")
                     self.errorMessage = error.localizedDescription
                     return
                 }
                 
                 // Successfully signed in
                 if let user = result?.user {
-                    print("Successfully signed in user: \(user.uid)")  // Add this
+                    print("Successfully signed in user: \(user.uid)")
+                    // Store credentials when sign in is successful
+                    UserCredentials.shared.email = email
+                    UserCredentials.shared.password = password
                     self.checkUserRole(userId: user.uid)
                 }
             }
         }
     }
-   
-   // MARK: - Check User Role
-   private func checkUserRole(userId: String) {
-       let db = Firestore.firestore()
-       
-       db.collection("users").document(userId).getDocument { [weak self] document, error in
-           guard let self = self else { return }
-           
-           DispatchQueue.main.async {
-               if let document = document, document.exists {
-                   // Check if user is admin
-                   self.isAdmin = document.data()?["role"] as? String == "admin"
-                   self.isAuthenticated = true
-               } else {
-                   self.errorMessage = "User data not found"
-               }
-           }
-       }
-   }
+    
+    // MARK: - Check User Role
+    private func checkUserRole(userId: String) {
+        let db = Firestore.firestore()
+        
+        // First get all organizations
+        db.collection("organization").getDocuments { [weak self] (snapshot, error) in
+            guard let self = self else { return }
+            
+            if let error = error {
+                DispatchQueue.main.async {
+                    self.errorMessage = error.localizedDescription
+                }
+                return
+            }
+            
+            // Check each organization for this admin
+            for organization in snapshot?.documents ?? [] {
+                let orgId = organization.documentID
+                
+                // Check the admins subcollection for this user
+                db.collection("organization")
+                    .document(orgId)
+                    .collection("admins")
+                    .document(userId)
+                    .getDocument { (adminDoc, error) in
+                        DispatchQueue.main.async {
+                            if let adminDoc = adminDoc, adminDoc.exists {
+                                // Found the admin
+                                self.isAdmin = true
+                                self.isAuthenticated = true
+                                self.organizationId = orgId
+                                
+                                // Log success
+                                print("Found admin in organization: \(orgId)")
+                                
+                                // You can also get admin data if needed
+                                if let adminData = adminDoc.data() {
+                                    print("Admin data:", adminData)
+                                }
+                            } else if error != nil {
+                                self.errorMessage = error?.localizedDescription
+                            }
+                        }
+                    }
+            }
+        }
+    }
     
     // Add to your AuthViewModel class:
     func signUp(email: String, password: String, firstName: String, lastName: String, unitNumber: String, isAdmin: Bool) {
@@ -87,24 +126,22 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
-
+    
     private func createUserDocument(user: User, firstName: String, lastName: String, unitNumber: String, isAdmin: Bool) {
         let db = Firestore.firestore()
         
-        
         let userData: [String: Any] = [
-                "email": user.email ?? "",
-                "firstName": firstName,
-                "lastName": lastName,
-                "unitNumber": unitNumber,
-                "role": isAdmin ? "admin" : "resident",
-                "createdAt": Timestamp(date: Date()),
-                "phoneNumber": "",  // Add these fields
-                "moveInDate": "Sept 1, 2023",  // Add with default values
-                "leaseEndDate": "Aug 2025",    // Add with default values
-                "rentStatus": "Paid"           // Add with default values
-            ]
-
+            "email": user.email ?? "",
+            "firstName": firstName,
+            "lastName": lastName,
+            "unitNumber": unitNumber,
+            "role": isAdmin ? "admin" : "resident",
+            "createdAt": Timestamp(date: Date()),
+            "phoneNumber": "",  // Add these fields
+            "moveInDate": "Sept 1, 2023",  // Add with default values
+            "leaseEndDate": "Aug 2025",    // Add with default values
+            "rentStatus": "Paid"           // Add with default values
+        ]
         
         db.collection("users").document(user.uid).setData(userData) { [weak self] error in
             guard let self = self else { return }
@@ -130,7 +167,6 @@ struct LoginView: View {
     @Binding var isAdmin: Bool
     @State private var email = ""
     @State private var password = ""
-    @State private var showingAlert = false
     
     // Define colors
     let goldColor = Color(red: 212/255, green: 175/255, blue: 55/255)
@@ -145,14 +181,12 @@ struct LoginView: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(spacing: 20) {
-    
                         // Logo/Title Area
                         Text("Bait.ai")
                             .font(.system(size: 32, weight: .bold))
                             .foregroundColor(isAdmin ? .white : .black)
                             .padding(.bottom, 30)
                         
-                        // Rest of your existing code...
                         // User Type Toggle
                         HStack {
                             Toggle("", isOn: $isAdmin)

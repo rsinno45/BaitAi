@@ -7,16 +7,14 @@ import SwiftUI
 
 struct MaintenanceRequestAdmin: Identifiable, Codable {
     let id: String
-    let title: String
-    let description: String
-    let residentId: String
-    let propertyId: String
-    let status: String // Changed from enum to String
-    let urgency: String // Changed from enum to String
-    let createdAt: Date
-    var updatedAt: Date
-    let unitNumber: String // Add this
-    let companyId: String
+        let title: String
+        let description: String
+        let residentId: String
+        let status: String
+        let urgency: String
+        let createdAt: Date
+        let updatedAt: Date
+        let unitNumber: String
 
     enum RequestStatus: String, Codable {
         case active = "active"
@@ -36,15 +34,15 @@ struct MaintenanceRequestAdmin: Identifiable, Codable {
 // Message Model
 struct MaintenanceMessage: Identifiable, Codable {
     let id: String
-    let requestId: String
-    let senderId: String
-    let senderRole: UserRole
-    let content: String
-    let timestamp: Date
-    var isRead: Bool
-    
-    enum UserRole: String, Codable {
-        case admin = "admin"
-        case resident = "resident"
-    }
+        let requestId: String
+        let senderId: String
+        let senderRole: UserRole
+        let content: String
+        let timestamp: Date
+        var isRead: Bool
+        
+        enum UserRole: String, Codable {
+            case admin
+            case resident
+        }
 }

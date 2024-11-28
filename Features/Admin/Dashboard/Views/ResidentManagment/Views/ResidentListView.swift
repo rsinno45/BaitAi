@@ -4,6 +4,8 @@ import FirebaseAuth
 
 // MARK: - View Models
 class ResidentListViewModel: ObservableObject {
+    @Published var firstName = ""
+    @Published var lastName = ""
     @Published var residents: [Resident] = []
     @Published var properties: [Property] = []
     @Published var selectedPropertyId: String?
@@ -11,11 +13,27 @@ class ResidentListViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var searchText = ""
+    @Published var organizationId: String?
     
     private var db = Firestore.firestore()
+    private var adminEmail: String?
+    private var adminPassword: String?
+    
+    func setAdminCredentials(email: String, password: String) {
+            self.adminEmail = email
+            self.adminPassword = password
+        }
+
+
+    
     private var currentAdminId: String? {
         Auth.auth().currentUser?.uid
     }
+    
+    init() {
+            findUserOrganization()
+        }
+
     
     var filteredResidents: [Resident] {
         var filtered = residents
@@ -42,17 +60,40 @@ class ResidentListViewModel: ObservableObject {
         return filtered
     }
     
+    private func findUserOrganization() {
+            guard let userId = Auth.auth().currentUser?.uid else { return }
+            
+            db.collection("organization").getDocuments { [weak self] snapshot, error in
+                guard let self = self,
+                      let documents = snapshot?.documents else { return }
+                
+                for doc in documents {
+                    self.db.collection("organization")
+                        .document(doc.documentID)
+                        .collection("admins")
+                        .document(userId)
+                        .getDocument { adminDoc, error in
+                            if let _ = adminDoc, adminDoc?.exists == true {
+                                self.organizationId = doc.documentID
+                                self.fetchResidents()
+                                self.fetchProperties()
+                            }
+                        }
+                }
+            }
+        }
+
+    
     func fetchProperties() {
-        guard let adminId = currentAdminId else { return }
-        print("Fetching properties for admin: \(adminId)")
+        guard let orgId = organizationId else { return }
         
-        db.collection("properties")
-            .whereField("adminId", isEqualTo: adminId)
+        db.collection("organization")
+            .document(orgId)
+            .collection("properties")
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
                 
                 if let error = error {
-                    print("Error fetching properties: \(error)")
                     self.errorMessage = error.localizedDescription
                     return
                 }
@@ -60,31 +101,31 @@ class ResidentListViewModel: ObservableObject {
                 self.properties = snapshot?.documents.compactMap { document in
                     try? document.data(as: Property.self)
                 } ?? []
-                
-                print("Fetched \(self.properties.count) properties")
             }
     }
-    
     func addResident(_ resident: Resident) {
-        guard let adminId = currentAdminId else { return }
+        guard let orgId = organizationId else { return }
+        guard let currentAdmin = Auth.auth().currentUser else { return }
         
-        // Clean the phone number to use as password (same as before)
         let temporaryPassword = resident.phone.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
         
-        // Create Firebase Auth user (same as before)
         Auth.auth().createUser(withEmail: resident.email, password: temporaryPassword) { [weak self] result, error in
             guard let self = self else { return }
             
             if let error = error {
-                print("Error creating user: \(error)")
                 self.errorMessage = error.localizedDescription
                 return
             }
             
             guard let firebaseUser = result?.user else { return }
             
-            // 1. Create resident document (same as before)
-            let docRef = self.db.collection("residents").document()
+            let batch = self.db.batch()
+            
+            // Add to residents collection
+            let residentRef = self.db.collection("organization")
+                .document(orgId)
+                .collection("residents")
+                .document(firebaseUser.uid)
             
             let residentData: [String: Any] = [
                 "firstName": resident.firstName,
@@ -95,34 +136,12 @@ class ResidentListViewModel: ObservableObject {
                 "propertyId": resident.propertyId,
                 "status": resident.status.rawValue,
                 "createdAt": Timestamp(date: Date()),
-                "adminId": adminId,
+                "organizationId": orgId,
                 "firebaseUID": firebaseUser.uid
             ]
             
-            // 2. Create user document (NEW!)
-            let userData: [String: Any] = [
-                "email": resident.email,
-                "firstName": resident.firstName,
-                "lastName": resident.lastName,
-                "unitNumber": resident.unitNumber,
-                "role": "resident",
-                "createdAt": Timestamp(date: Date()),
-                "phoneNumber": resident.phone,
-                "propertyId": resident.propertyId,
-                "status": resident.status.rawValue
-            ]
+            batch.setData(residentData, forDocument: residentRef)
             
-            // Start a batch write
-            let batch = self.db.batch()
-            
-            // Add resident document to batch
-            batch.setData(residentData, forDocument: docRef)
-            
-            // Add user document to batch
-            let userRef = self.db.collection("users").document(firebaseUser.uid)
-            batch.setData(userData, forDocument: userRef)
-            
-            // Commit the batch
             batch.commit { [weak self] error in
                 if let error = error {
                     print("Error writing batch: \(error)")
@@ -130,27 +149,32 @@ class ResidentListViewModel: ObservableObject {
                     return
                 }
                 
-                // Continue with existing code...
-                self?.createPendingUserAccount(
-                    email: resident.email,
-                    propertyId: resident.propertyId,
-                    temporaryPassword: temporaryPassword
-                )
-                
-                // Send password reset email
-                Auth.auth().sendPasswordReset(withEmail: resident.email) { error in
-                    if let error = error {
-                        print("Error sending password reset: \(error)")
-                        return
+                // Sign back in as the admin using stored credentials
+                if let adminEmail = UserCredentials.shared.email,
+                   let adminPassword = UserCredentials.shared.password {
+                    Auth.auth().signIn(withEmail: adminEmail, password: adminPassword) { _, error in
+                        if let error = error {
+                            print("Error signing back in as admin: \(error)")
+                            return
+                        }
+                        
+                        // Now send the password reset email
+                        Auth.auth().sendPasswordReset(withEmail: resident.email) { error in
+                            if let error = error {
+                                print("Error sending password reset: \(error)")
+                                return
+                            }
+                            print("Password reset email sent successfully")
+                        }
+                        
+                        self?.fetchResidents()
                     }
-                    print("Password reset email sent successfully")
+                } else {
+                    print("Error: No admin credentials stored")
                 }
-                
-                self?.fetchResidents()
             }
         }
     }
-
     private func createPendingUserAccount(email: String, propertyId: String, temporaryPassword: String) {
         // First get the company name for the current admin
         guard let adminId = currentAdminId else { return }
@@ -194,45 +218,32 @@ class ResidentListViewModel: ObservableObject {
     }
     
     func fetchResidents() {
-            guard let adminId = currentAdminId else {
-                print("No admin ID found")
-                return
-            }
+            guard let orgId = organizationId else { return }
             
             isLoading = true
-            print("Fetching residents for admin: \(adminId)")
             
-            // Fetch properties first
-            fetchProperties()
-            
-            // Then fetch residents with real-time updates
-            db.collection("residents")
-                .whereField("adminId", isEqualTo: adminId)
+            db.collection("organization")
+                .document(orgId)
+                .collection("residents")
                 .addSnapshotListener { [weak self] snapshot, error in
                     guard let self = self else { return }
                     self.isLoading = false
                     
                     if let error = error {
-                        print("Error fetching residents: \(error)")
                         self.errorMessage = error.localizedDescription
                         return
                     }
                     
                     if let snapshot = snapshot {
-                        print("Got \(snapshot.documents.count) residents")
                         self.residents = snapshot.documents.compactMap { document in
-                            // Use the new document initializer
                             let resident = Resident(document: document)
-                            print("Parsed resident: \(resident?.firstName ?? "unknown") \(resident?.lastName ?? "unknown")")
                             return resident
                         }
-                        print("Parsed \(self.residents.count) residents")
                     }
                 }
         }
 }
 
-// MARK: - Views
 struct ResidentListView: View {
     @Binding var isShowingResidentsView: Bool
     @StateObject private var viewModel = ResidentListViewModel()
@@ -297,7 +308,7 @@ struct ResidentListView: View {
                 
                 // Residents List
                 ScrollView {
-                    VStack(spacing: 12) {
+                    LazyVStack(spacing: 12) {
                         ForEach(viewModel.filteredResidents) { resident in
                             NavigationLink(destination: ResidentDetailView(viewModel: ResidentDetailViewModel(resident: resident))) {
                                 ResidentRowView(resident: resident)
@@ -308,29 +319,9 @@ struct ResidentListView: View {
                 }
             }
             .padding(.vertical)
-            
-            // Loading State
-            if viewModel.isLoading {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: goldColor))
-                    .scaleEffect(1.5)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.black.opacity(0.5))
-            }
-            
-            // Filter Sheet
-            if showingFilters {
-                ResidentFilterView(
-                    isPresented: $showingFilters,
-                    filters: $viewModel.filters
-                )
-            }
         }
         .sheet(isPresented: $showingAddResident) {
             AddResidentView(viewModel: viewModel)
-        }
-        .onAppear {
-            viewModel.fetchResidents()
         }
     }
 }
@@ -343,7 +334,6 @@ struct AddResidentView: View {
     @State private var email = ""
     @State private var phone = ""
     @State private var unitNumber = ""
-    @State private var adminId = ""
     @State private var selectedProperty: Property?
     let goldColor = Color(red: 212/255, green: 175/255, blue: 55/255)
     
@@ -398,7 +388,8 @@ struct AddResidentView: View {
     }
     
     private func addResident() {
-        guard let property = selectedProperty else { return }
+        guard let property = selectedProperty,
+              let orgId = viewModel.organizationId else { return }
         
         let newResident = Resident(
             firstName: firstName,
@@ -407,7 +398,8 @@ struct AddResidentView: View {
             phone: phone,
             unitNumber: unitNumber,
             propertyId: property.id,
-            status: .pending, adminId: adminId
+            status: .pending,
+            organizationId: orgId
         )
         
         viewModel.addResident(newResident)

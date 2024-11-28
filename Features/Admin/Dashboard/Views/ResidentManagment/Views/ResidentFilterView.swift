@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ResidentFilters {
-    var sortBy: SortOption = .name
     var filterStatus: ResidentStatus = .all
 }
 
@@ -57,30 +56,30 @@ struct ResidentFilterView: View {
                 }
                 
                 // Filter Options
-                VStack(alignment: .leading, spacing: 20) {
-                    filterSection(title: "Sort By") {
-                        Picker("Sort By", selection: $filters.sortBy) {
-                            ForEach(SortOption.allCases, id: \.self) { option in
-                                Text(option.rawValue).tag(option)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                    }
+                // VStack(alignment: .leading, spacing: 20) {
+                   // filterSection(title: "Sort By") {
+                     //   Picker("Sort By", selection: $filters.sortBy) {
+                       //     ForEach(SortOption.allCases, id: \.self) { option in
+                         //       Text(option.rawValue).tag(option)
+                           // }
+                        //}
+                        //.pickerStyle(.segmented)
+                   // }
                     
-                    filterSection(title: "Resident Status") {
-                        Picker("Status", selection: $filters.filterStatus) {
-                            ForEach(ResidentStatus.allCases, id: \.self) { status in
-                                Text(status.rawValue).tag(status)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                    }
-                }
-                .padding()
-                .background(Color.white.opacity(0.1))
-                .cornerRadius(15)
+                    //filterSection(title: "Resident Status") {
+                      //  Picker("Status", selection: $filters.filterStatus) {
+                        //    ForEach(ResidentStatus.allCases, id: \.self) { status in
+                          //      Text(status.rawValue).tag(status)
+                            //}
+                        //}
+                        //.pickerStyle(.segmented)
+                    //}
+                //}
+              //  .padding()
+                //.background(Color.white.opacity(0.1))
+                //.cornerRadius(15)
                 
-                Spacer()
+             //   Spacer()
                 
                 // Apply Button
                 Button(action: {

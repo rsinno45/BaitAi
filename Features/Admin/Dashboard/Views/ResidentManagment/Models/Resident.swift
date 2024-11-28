@@ -11,11 +11,12 @@ import SwiftUI
 import Firebase
 
 enum ResidentStatus: String, Codable, CaseIterable {
-    case active = "Active"
-    case inactive = "Inactive"
-    case pending = "Pending"
-    case all = "All"
+    case active = "active"
+    case pending = "pending"
+    case inactive = "inactive"
+    case all = "all"
 }
+
 
 struct Resident: Identifiable, Codable {
     var id: String
@@ -27,20 +28,8 @@ struct Resident: Identifiable, Codable {
     var propertyId: String
     var status: ResidentStatus
     var createdAt: Date
-    var adminId: String
-
-    // Computed properties (not part of Codable)
-    var initials: String {
-        let firstInitial = firstName.prefix(1)
-        let lastInitial = lastName.prefix(1)
-        return "\(firstInitial)\(lastInitial)"
-    }
+    var organizationId: String
     
-    var fullName: String {
-        "\(firstName) \(lastName)"
-    }
-    
-    // Explicit coding keys
     enum CodingKeys: String, CodingKey {
         case id
         case firstName
@@ -51,10 +40,30 @@ struct Resident: Identifiable, Codable {
         case propertyId
         case status
         case createdAt
-        case adminId
+        case organizationId
     }
+    
+    var initials: String {
+            let firstInitial = firstName.prefix(1)
+            let lastInitial = lastName.prefix(1)
+            return "\(firstInitial)\(lastInitial)"
+        }
 
-    // Custom initializer
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        firstName = try container.decode(String.self, forKey: .firstName)
+        lastName = try container.decode(String.self, forKey: .lastName)
+        email = try container.decode(String.self, forKey: .email)
+        phone = try container.decode(String.self, forKey: .phone)
+        unitNumber = try container.decode(String.self, forKey: .unitNumber)
+        propertyId = try container.decode(String.self, forKey: .propertyId)
+        status = try container.decode(ResidentStatus.self, forKey: .status)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        organizationId = try container.decode(String.self, forKey: .organizationId)
+    }
+    
     init(id: String = UUID().uuidString,
          firstName: String,
          lastName: String,
@@ -63,8 +72,8 @@ struct Resident: Identifiable, Codable {
          unitNumber: String,
          propertyId: String,
          status: ResidentStatus,
-         adminId: String,
-         createdAt: Date = Date()) {
+         createdAt: Date = Date(),
+         organizationId: String) {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
@@ -74,37 +83,27 @@ struct Resident: Identifiable, Codable {
         self.propertyId = propertyId
         self.status = status
         self.createdAt = createdAt
-        self.adminId = adminId
+        self.organizationId = organizationId
     }
     
-    // Add Firestore document initializer
+    // Keep your existing document initializer
     init?(document: QueryDocumentSnapshot) {
         let data = document.data()
-        
-        // Use document ID as the resident ID
         self.id = document.documentID
+        self.firstName = data["firstName"] as? String ?? ""
+        self.lastName = data["lastName"] as? String ?? ""
+        self.email = data["email"] as? String ?? ""
+        self.phone = data["phone"] as? String ?? ""
+        self.unitNumber = data["unitNumber"] as? String ?? ""
+        self.propertyId = data["propertyId"] as? String ?? ""
+        self.organizationId = data["organizationId"] as? String ?? ""
+        self.status = ResidentStatus(rawValue: data["status"] as? String ?? "") ?? .pending
         
-        // Extract other fields with proper type casting
-        guard let firstName = data["firstName"] as? String,
-              let lastName = data["lastName"] as? String,
-              let email = data["email"] as? String,
-              let phone = data["phone"] as? String,
-              let unitNumber = data["unitNumber"] as? String,
-              let propertyId = data["propertyId"] as? String,
-              let statusRawValue = data["status"] as? String,
-              let adminId = data["adminId"] as? String,
-              let createdAt = (data["createdAt"] as? Timestamp)?.dateValue() else {
-            return nil
+        // Handle date conversion from Timestamp
+        if let timestamp = data["createdAt"] as? Timestamp {
+            self.createdAt = timestamp.dateValue()
+        } else {
+            self.createdAt = Date()
         }
-        
-        self.firstName = firstName
-        self.lastName = lastName
-        self.email = email
-        self.phone = phone
-        self.unitNumber = unitNumber
-        self.propertyId = propertyId
-        self.status = ResidentStatus(rawValue: statusRawValue) ?? .pending
-        self.createdAt = createdAt
-        self.adminId = adminId
     }
 }

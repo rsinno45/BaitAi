@@ -73,26 +73,76 @@ struct PropertiesView: View {
 
 class PropertiesViewModel: ObservableObject {
     @Published var properties: [Property] = []
-    private var currentUserId: String? {
-        Auth.auth().currentUser?.uid
-    }
-    private var currentUserEmail: String? {
-        Auth.auth().currentUser?.email
-    }
+    @Published var organizationId: String?
+    private let db = Firestore.firestore()
     
     init() {
-        fetchProperties()
+        findUserOrganization()
     }
     
-    func fetchProperties() {
-        guard let adminId = currentUserId else { return }
+    private func findUserOrganization() {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("⚠️ No current user found")
+            return
+        }
+        print("👤 Current user ID: \(userId)")
+        print("📱 Finding organization for user: \(userId)")
         
-        let db = Firestore.firestore()
-        // Query only properties belonging to current admin
-        db.collection("properties")
-            .whereField("adminId", isEqualTo: adminId)
+        // Let's also log the current user's email to verify it's the admin
+        if let email = Auth.auth().currentUser?.email {
+            print("📧 Current user email: \(email)")
+        }
+        
+        db.collection("organization").getDocuments { [weak self] snapshot, error in
+            guard let self = self,
+                  let documents = snapshot?.documents else {
+                print("❌ Error getting documents: \(error?.localizedDescription ?? "unknown")")
+                return
+            }
+            
+            print("📚 Found \(documents.count) organizations")
+            
+            for doc in documents {
+                print("🔍 Checking organization: \(doc.documentID)")
+                self.db.collection("organization")
+                    .document(doc.documentID)
+                    .collection("admins")
+                    .document(userId)
+                    .getDocument { adminDoc, error in
+                        if let error = error {
+                            print("❌ Error checking admin status: \(error.localizedDescription)")
+                            return
+                        }
+                        
+                        if let _ = adminDoc, adminDoc?.exists == true {
+                            print("✅ Found admin in organization: \(doc.documentID)")
+                            self.organizationId = doc.documentID
+                            self.fetchProperties()
+                        } else {
+                            print("❌ User \(userId) is not an admin in org \(doc.documentID)")
+                        }
+                    }
+            }
+        }
+    }
+    func fetchProperties() {
+        guard let orgId = organizationId else {
+            print("No organization ID found")
+            return
+        }
+        
+        print("Fetching properties for organization: \(orgId)")
+        
+        db.collection("organization")
+            .document(orgId)
+            .collection("properties")
             .addSnapshotListener { [weak self] snapshot, error in
-                guard let documents = snapshot?.documents else { return }
+                guard let documents = snapshot?.documents else {
+                    print("No properties found or error: \(error?.localizedDescription ?? "")")
+                    return
+                }
+                
+                print("Found \(documents.count) properties")
                 
                 DispatchQueue.main.async {
                     self?.properties = documents.compactMap { document -> Property? in
@@ -101,30 +151,37 @@ class PropertiesViewModel: ObservableObject {
                         return property
                     }
                 }
-        }
+            }
     }
     
     func addProperty(_ propertyData: PropertyData) {
-        guard let adminId = currentUserId,
-              let adminEmail = currentUserEmail else { return }
+        guard let orgId = organizationId else {
+            print("No organization ID found")
+            return
+        }
+        
+        print("Adding property to organization: \(orgId)")
         
         let property = Property(
             name: propertyData.name,
             address: propertyData.address,
             units: propertyData.units,
             amenities: propertyData.amenities,
-            adminId: adminId,
-            adminEmail: adminEmail
+            organizationId: orgId
         )
         
-        let db = Firestore.firestore()
         do {
-            _ = try db.collection("properties").addDocument(from: property)
+            _ = try db.collection("organization")
+                .document(orgId)
+                .collection("properties")
+                .addDocument(from: property)
+            print("Successfully added property")
         } catch {
             print("Error adding property: \(error)")
         }
     }
 }
+
 
 struct PropertyData {
     var name: String
@@ -140,17 +197,15 @@ struct Property: Identifiable, Codable, Hashable {
     var address: String
     var units: Int
     var amenities: [String]
-    var adminId: String  // Add this to track which admin created/owns it
-    var adminEmail: String  // Add this for reference
+    var organizationId: String
     
     func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-        }
-        
+        hasher.combine(id)
+    }
+    
     static func == (lhs: Property, rhs: Property) -> Bool {
-            lhs.id == rhs.id
-        }
-
+        lhs.id == rhs.id
+    }
 }
 
 struct AddPropertyView: View {

@@ -108,8 +108,9 @@ struct MaintenanceView: View {
         }
         .sheet(isPresented: $showingNewRequestSheet) {
             NewMaintenanceRequestView(
-                isPresented: $showingNewRequestSheet,
-                viewModel: viewModel
+                viewModel: viewModel,
+                isPresented: $showingNewRequestSheet
+                
             )
         }
     }
@@ -194,13 +195,13 @@ struct StatusBadge: View {
     }
 }
 struct NewMaintenanceRequestView: View {
-    @Binding var isPresented: Bool
-    let viewModel: MaintenanceRequestViewModel  // Remove @ObservedObject
+    @ObservedObject var viewModel: MaintenanceRequestViewModel
     @State private var title = ""
     @State private var description = ""
     @State private var urgency = 0
-    let goldColor = Color(red: 212/255, green: 175/255, blue: 55/255)
-    
+    @Binding var isPresented: Bool
+    @State private var unitNumber: String = ""
+
     var body: some View {
         NavigationView {
             Form {
@@ -208,7 +209,7 @@ struct NewMaintenanceRequestView: View {
                     TextField("Title", text: $title)
                     TextEditor(text: $description)
                         .frame(height: 100)
-                    
+
                     Picker("Urgency", selection: $urgency) {
                         Text("Low").tag(0)
                         Text("Medium").tag(1)
@@ -217,25 +218,33 @@ struct NewMaintenanceRequestView: View {
                 }
             }
             .navigationTitle("New Request")
-                        .navigationBarItems(
-                            leading: Button("Cancel") {
-                                isPresented = false
-                            },
-                            trailing: Button("Submit") {
-                                viewModel.submitRequest(  // Updated function name
-                                    title: title,
-                                    description: description,
-                                    urgency: urgency
-                                )
-                                isPresented = false
-                            }
-                            .disabled(title.isEmpty || description.isEmpty)
-                        )
-                    }
+            .navigationBarItems(
+                leading: Button("Cancel") {
+                    isPresented = false
+                },
+                trailing: Button("Submit") {
+                    viewModel.submitRequest(
+                        title: title,
+                        description: description,
+                        urgency: getUrgencyString(urgency),
+                        unitNumber: String(unitNumber)
+                    )
+                    isPresented = false
                 }
-            }
+                .disabled(title.isEmpty || description.isEmpty)
+            )
+        }
+    }
     
-    
+    private func getUrgencyString(_ value: Int) -> String {
+        switch value {
+            case 0: return "low"
+            case 1: return "medium"
+            case 2: return "high"
+            default: return "low"
+        }
+    }
+}
 
     
     // Sample data

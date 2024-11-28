@@ -111,16 +111,17 @@ struct AdminMaintenanceView: View {
             }
         }
         .onAppear {
-            viewModel.fetchRequests(for: viewModel.currentUserId, isAdmin: true)
+            viewModel.fetchMaintenanceRequests()
         }
     }
     
     func refreshData() async {
         try? await Task.sleep(nanoseconds: 500_000_000)
-        viewModel.fetchRequests(for: viewModel.currentUserId, isAdmin: true)
+        viewModel.fetchMaintenanceRequests()
     }
 }
 
+// [Previous supporting views stay the same...]
 struct RequestStatusCard: View {
     let title: String
     let count: Int
@@ -252,11 +253,11 @@ struct AdminMaintenanceRequestCard: View {
         .padding()
         .background(Color.white.opacity(0.1))
         .cornerRadius(15)
-        .navigationDestination(isPresented: $showingChatView) {
+        navigationDestination(isPresented: $showingChatView) {
             MaintenanceChatView(
                 viewModel: viewModel,
                 request: request,
-                currentUserId: viewModel.currentUserId,
+                currentUserId: viewModel.currentUserId, // Use viewModel's property instead
                 isAdmin: true
             )
         }

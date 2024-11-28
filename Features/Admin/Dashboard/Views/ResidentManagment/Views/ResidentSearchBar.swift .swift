@@ -14,25 +14,14 @@ struct ResidentSearchBar: View {
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
+                .foregroundColor(goldColor)
             
             TextField("Search residents...", text: $text)
+                .textFieldStyle(PlainTextFieldStyle())
                 .foregroundColor(.white)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-            
-            if !text.isEmpty {
-                Button(action: {
-                    text = ""
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
-                }
-            }
         }
         .padding()
         .background(Color.white.opacity(0.1))
         .cornerRadius(10)
     }
 }
-

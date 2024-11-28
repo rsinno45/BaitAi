@@ -7,18 +7,10 @@
 
 import SwiftUI
 
-struct ResidentDocument: Identifiable, Codable {
+struct ResidentDocument: Codable, Identifiable {
     let id: String
-    let residentId: String
     let name: String
-    let type: DocumentType
-    let url: String
     let uploadDate: Date
-    let expirationDate: Date?
-    
-    enum DocumentType: String, Codable {
-        case lease, identification, insurance, other
-    }
+    let type: String
+    let url: String
 }
-
-

@@ -13,14 +13,10 @@ struct ResidentRowView: View {
     
     var body: some View {
         HStack(spacing: 15) {
+            // Resident Status Indicator
             Circle()
-                .fill(goldColor)
-                .frame(width: 50, height: 50)
-                .overlay(
-                    Text(resident.initials)
-                        .foregroundColor(.white)
-                        .font(.system(size: 20, weight: .medium))
-                )
+                .fill(statusColor)
+                .frame(width: 10, height: 10)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text("\(resident.firstName) \(resident.lastName)")
@@ -34,10 +30,20 @@ struct ResidentRowView: View {
             
             Spacer()
             
-            StatusBadgeComp(status: resident.status)
+            Image(systemName: "chevron.right")
+                .foregroundColor(goldColor)
         }
         .padding()
         .background(Color.white.opacity(0.1))
         .cornerRadius(15)
+    }
+    
+    private var statusColor: Color {
+        switch resident.status {
+        case .active: return .green
+        case .pending: return .orange
+        case .inactive: return .red
+        default: return .gray
+        }
     }
 }
